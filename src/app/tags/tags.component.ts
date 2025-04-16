@@ -22,7 +22,8 @@ export class TagsComponent {
   }
 
   loadTags() {
-    this.tags = this.storage.load();
+    
+    this.tags = this.storage.loadTags();
   }
 
   saveTag() {
@@ -36,7 +37,7 @@ export class TagsComponent {
       if (index !== -1) this.tags[index] = { ...this.editing };
     }
 
-    this.storage.save(this.tags); // 💾 Sauvegarde après modification
+    this.storage.saveTags(this.tags); 
     this.editing = null;
   }
 
@@ -50,6 +51,6 @@ export class TagsComponent {
 
   deleteTag(tag: Tag) {
     this.tags = this.tags.filter(t => t.id !== tag.id);
-    this.storage.save(this.tags); // 💾 Sauvegarde après suppression
+    this.storage.saveTags(this.tags);
   }
 }

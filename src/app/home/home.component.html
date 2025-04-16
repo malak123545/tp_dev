@@ -1,28 +1,81 @@
-<section class="notes-wrapper">
-    <h2>Mes notes</h2>
-  
-    <button class="add-btn" (click)="toggleForm()">+ Nouvelle note</button>
-  
-    <form *ngIf="showForm" (ngSubmit)="saveNote()" class="note-form">
-      <input type="text" placeholder="Titre" [(ngModel)]="note.title" name="title" required />
-      <textarea rows="5" placeholder="Contenu" [(ngModel)]="note.content" name="content" required></textarea>
-      <input type="color" [(ngModel)]="note.color" name="color" />
-      <div class="form-actions">
-        <button type="submit">Enregistrer</button>
-        <button type="button" (click)="cancel()">Annuler</button>
-      </div>
-    </form>
-  
-    <div class="note-card" *ngFor="let n of notes">
-      <div class="note-header">
-        <h3>{{ n.title }}</h3>
-        <div>
-          <button (click)="edit(n)">Modifier</button>
-          <button (click)="deleteNote(n)">Supprimer</button>
-        </div>
-      </div>
-      <p>{{ n.content }}</p>
-      <div class="color-box" [style.backgroundColor]="n.color"></div>
-    </div>
-  </section>
-  
+<h2>Accueil</h2>
+
+
+<button (click)="addNote()">Ajouter une note</button>
+
+
+<form *ngIf="editing" (ngSubmit)="saveNote()" class="note-form">
+  <input 
+    type="text"
+    placeholder="Titre de la note" 
+    [(ngModel)]="editing.title" 
+    name="title" 
+    required
+  />
+
+  <textarea 
+    *ngIf="!editing.checklist"
+    placeholder="Contenu de la note" 
+    rows="5" 
+    [(ngModel)]="editing.content" 
+    name="content" 
+    required>
+  </textarea>
+
+
+  <div class="tag-selector">
+    <label *ngFor="let tag of tags" class="tag-option">
+      <input 
+        type="checkbox" 
+        [checked]="editing.tags.includes(tag.id)"
+        (change)="toggleTag(tag.id)" />
+      <app-tag 
+        [id]="tag.id" 
+        [name]="tag.name" 
+        [color]="tag.color">
+      </app-tag>
+    </label>
+  </div>
+  <input type="color" [(ngModel)]="editing.color" name="color" />
+
+
+  <label>
+    <input 
+      type="checkbox" 
+      [(ngModel)]="editing.checklist" 
+      name="isChecklist" />
+    Note avec checklist
+  </label>
+
+  <div class="form-actions">
+    <button type="submit">Enregistrer</button>
+    <button type="button" (click)="cancelEditing()">Annuler</button>
+  </div>
+</form>
+
+
+<div *ngFor="let note of notes" class="note" [style.backgroundColor]="note.color">
+  <h3>{{ note.title }}</h3>
+
+
+  <p *ngIf="!note.checklist">{{ note.content }}</p>
+  <ul *ngIf="note.checklist">
+    <li *ngFor="let item of note.checklistItems">
+      <input type="checkbox" [checked]="item.checked" disabled />
+      {{ item.text }}
+    </li>
+  </ul>
+
+
+  <div class="note-tags">
+    <app-tag 
+      *ngFor="let tagId of note.tags"
+      [id]="tagId"
+      [name]="getTagName(tagId)"
+      [color]="getTagColor(tagId)">
+    </app-tag>
+  </div>
+
+  <button (click)="edit(note)">✏️ Modifier</button>
+  <button (click)="deleteNote(note)">🗑️ Supprimer</button>
+</div>

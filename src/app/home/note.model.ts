@@ -1,8 +1,10 @@
-export class Note {
-  constructor(
-    public id: number,
-    public title: string,
-    public content: string,
-    public color: string
-  ) {}
+
+export interface Note {
+  id: number;
+  title: string;
+  content: string;
+  color: string;
+  checklist: boolean;
+  checklistItems: { text: string; checked: boolean }[];
+  tags: number[]; 
 }
